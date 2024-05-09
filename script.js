@@ -206,7 +206,6 @@ function init() {
         const floorMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc }); // Simple gray floor material
         const floor = new THREE.Mesh(floorGeometry, floorMaterial);
         floor.rotation.x = -Math.PI / 2; // Rotate to lie flat on the X-Z plane
-        scene.add(floor);
         box.position.x = Math.random() * floorSize * 2 - floorSize; // Ensures values between -floorSize and floorSize
         box.position.y = Math.random() * (10 - 1) + 1;  // Ensures values between 1 and 10
         box.position.z = Math.random() * floorSize * 2 - floorSize; // Ensures values between -floorSize and floorSize
@@ -216,7 +215,8 @@ function init() {
         cylinder.position.x = Math.random() * floorSize * 2 - floorSize; // Ensures values between -floorSize and floorSize
         cylinder.position.y = Math.random() * (10 - 1) + 1;  // Ensures values between 1 and 10
         cylinder.position.z = Math.random() * floorSize * 2 - floorSize; // Ensures values between -floorSize and floorSize
-
+       
+        scene.add(floor);
         scene.add(box);
         scene.add(sphere);
         scene.add(cylinder);
