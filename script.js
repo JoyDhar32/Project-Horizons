@@ -164,13 +164,22 @@ function init() {
         const subdivisions = 100;
         const indices = [];
         const vertices = [];
+        const uvs = [];// -------define uvs
         for (let i = 0; i <= subdivisions; i++) {
             for (let j = 0; j <= subdivisions; j++) {
                 const x1 = i / subdivisions;
                 const z1 = j / subdivisions;
                 vertices.push(x1 * FLOOR_SIZE - FLOOR_SIZE / 2, noise2D(x + x1, z + z1) * FLOOR_SIZE / 10, z1 * FLOOR_SIZE - FLOOR_SIZE / 2);
+
+                let u = i / subdivisions;
+                let v = j / subdivisions;
+                uvs.push(u, v);// -------push uvs
             }
         }
+        
+        floorGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        floorGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));// -------set uvs
+        
         for (let x = 0; x < subdivisions; x++) {
             for (let z = 0; z < subdivisions; z++) {
                 const a = z + x * (subdivisions + 1);
@@ -184,8 +193,10 @@ function init() {
         floorGeometry.setIndex(indices);
         floorGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
         floorGeometry.computeVertexNormals();
-
         
+        let floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+        scene.add(floorMesh);// -------add floor to scene
+
         // vertex displacement
 
         let position = floorGeometry.attributes.position;
@@ -207,6 +218,14 @@ function init() {
 
         }
 
+        // set new material and texture
+        let texture = new THREE.TextureLoader().load('texture/Stylized_Stone_Floor_005_basecolor.jpg');
+        let newMaterial = new THREE.MeshBasicMaterial({ map: texture });
+
+        floorMesh.material = newMaterial;
+        floorMesh.material.needsUpdate = true;
+
+        
         floorGeometry = floorGeometry.toNonIndexed(); // ensure each face has unique vertices
 
         position = floorGeometry.attributes.position;
