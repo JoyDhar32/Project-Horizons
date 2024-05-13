@@ -4,6 +4,7 @@ import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-
 import { createNoise2D } from 'simplex-noise';
 
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
 THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
@@ -225,6 +226,38 @@ function init() {
         const floor = new THREE.Mesh(floorGeometry, floorMaterial);
         scene.add(floor);
 
+
+
+
+        //create a loader
+        const loader = new GLTFLoader();
+        const models = ['model/tree.glb',
+                         //'model/asia_building.glb', 
+                        'model/dog.glb',
+                        'model/horse_skeleton.glb'];
+
+        //load models
+        models.forEach((modelPath, index) => {
+            loader.load(
+              modelPath,
+              function (gltf) {
+                scene.add(gltf.scene);
+                // model position
+                gltf.scene.position.set(100 * index, 0, 0); // set the position of the model
+              },
+              function (xhr) {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+              },
+              function (error) {
+                console.log('An error happened');
+              }
+            );
+          });
+
+
+
+
+
         // objects
 
         position = boxGeometry.attributes.position;
@@ -271,6 +304,51 @@ function init() {
             objects.push(box);
             objects.push(sphere);
             objects.push(cylinder);
+
+
+            // models
+            const models = ['model/tree.glb',
+                        //'model/asia_building.glb',
+                            'model/dog.glb',
+                            'model/horse_skeleton.glb'];
+
+
+            const objectsToReplace = [box, sphere, cylinder];
+
+            // load 
+            models.forEach((modelPath, index) => {
+            loader.load(
+            modelPath,
+            function (gltf) {
+                const model = gltf.scene.clone();
+                model.position.copy(objectsToReplace[index].position);
+                
+                if (modelPath === 'model/tree.glb') {
+                    model.scale.set(10, 10, 10);}
+                    
+                if (modelPath === 'model/dog.glb') {
+                    model.scale.set(10, 10, 10);}
+
+
+            floor.add(model);
+            objects.push(model);
+            
+            
+            // remove the original object
+            floor.remove(objectsToReplace[index]);
+            const idx = objects.indexOf(objectsToReplace[index]);
+            if (idx > -1) {
+                objects.splice(idx, 1);
+            }
+        },
+        function (xhr) {
+            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+        },
+        function (error) {
+            console.log('An error happened');
+        }
+    );
+});
 
         }
 
