@@ -234,7 +234,11 @@ function init() {
         const models = ['model/tree.glb',
                          //'model/asia_building.glb', 
                         'model/dog.glb',
-                        'model/horse_skeleton.glb'];
+                        //'model/horse_skeleton.glb',
+                        'model/french_house_ww2.glb',
+                        //'model/wall.glb',
+                        //'model/darkbeast.glb',
+                    ];
 
         //load models
         models.forEach((modelPath, index) => {
@@ -308,9 +312,13 @@ function init() {
 
             // models
             const models = ['model/tree.glb',
-                        //'model/asia_building.glb',
-                            'model/dog.glb',
-                            'model/horse_skeleton.glb'];
+                        //'model/asia_building.glb', 
+                        'model/dog.glb',
+                        //'model/horse_skeleton.glb',
+                          'model/french_house_ww2.glb',
+                          //'model/wall.glb',
+                        //'model/darkbeast.glb',
+                           ];
 
 
             const objectsToReplace = [box, sphere, cylinder];
