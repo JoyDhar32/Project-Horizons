@@ -233,9 +233,9 @@ function init() {
         const loader = new GLTFLoader();
         const models = ['model/tree.glb',
                          //'model/asia_building.glb', 
-                        'model/dog.glb',
+                        //'model/dog.glb',
                         //'model/horse_skeleton.glb',
-                        'model/french_house_ww2.glb',
+                        //'model/french_house_ww2.glb',
                         //'model/wall.glb',
                         //'model/darkbeast.glb',
                     ];
@@ -249,12 +249,6 @@ function init() {
                 // model position
                 gltf.scene.position.set(100 * index, 0, 0); // set the position of the model
               },
-              function (xhr) {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-              },
-              function (error) {
-                console.log('An error happened');
-              }
             );
           });
 
@@ -313,9 +307,9 @@ function init() {
             // models
             const models = ['model/tree.glb',
                         //'model/asia_building.glb', 
-                        'model/dog.glb',
+                        //'model/dog.glb',
                         //'model/horse_skeleton.glb',
-                          'model/french_house_ww2.glb',
+                          //'model/french_house_ww2.glb',
                           //'model/wall.glb',
                         //'model/darkbeast.glb',
                            ];
@@ -334,8 +328,8 @@ function init() {
                 if (modelPath === 'model/tree.glb') {
                     model.scale.set(10, 10, 10);}
                     
-                if (modelPath === 'model/dog.glb') {
-                    model.scale.set(10, 10, 10);}
+                //if (modelPath === 'model/dog.glb') {
+                //    model.scale.set(10, 10, 10);}
 
 
             floor.add(model);
