@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-mesh-bvh';
 import { createNoise2D } from 'simplex-noise';
 
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
@@ -33,7 +34,7 @@ const FLOOR_SIZE = 2000;
 let generateFloor;
 const floors = {};
 
-const boxGeometry = new THREE.BoxGeometry(20, 20, 20).toNonIndexed();
+const boxGeometry = new THREE.BoxGeometry(100, 100, 100).toNonIndexed();
 const boxMaterial = new THREE.MeshPhongMaterial({ specular: 'purple', flatShading: true, vertexColors: true });
 boxMaterial.color.setHSL(Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75, THREE.SRGBColorSpace);
 const sphereGeometry = new THREE.SphereGeometry(5, 48, 48); // Adjust radius, segments for smoothness
@@ -41,8 +42,28 @@ const sphereMaterial = new THREE.MeshBasicMaterial({ color: '#9D941B' }); // Set
 const cylinderGeometry = new THREE.CylinderGeometry(8, 8, 8, 64); // Adjust radius top/bottom, height, segments for smoothness
 const cylinderMaterial = new THREE.MeshBasicMaterial({ color: 'orange' });
 boxGeometry.computeBoundsTree();
-sphereGeometry.computeBoundsTree();
-cylinderGeometry.computeBoundsTree();
+// sphereGeometry.computeBoundsTree();
+// cylinderGeometry.computeBoundsTree();
+
+const textureLoader = new THREE.TextureLoader();
+textureLoader.load('./css/image/boxImage.png',
+    function (texture) {
+        boxMaterial.map = texture;
+        boxMaterial.needsUpdate = true;
+    },
+)
+
+const loader = new GLTFLoader();
+
+loader.load('./css/gltf/smallHut/scene.gltf', function (gltf) {
+    const modelMesh = gltf.scene;
+    modelMesh.position.set(0, 0, 0);
+    modelMesh.scale.set(2, 2, 2);
+    modelMesh.rotation.set(0, Math.PI / 2, 0);
+    scene.add(modelMesh);
+    generateFloor();
+});
+
 
 init();
 animate();
@@ -285,11 +306,11 @@ function init() {
             setY(cylinder);
 
             floor.add(box);
-            floor.add(sphere);
-            floor.add(cylinder);
+            // floor.add(sphere);
+            // floor.add(cylinder);
             objects.push(box);
-            objects.push(sphere);
-            objects.push(cylinder);
+            // objects.push(sphere);
+            // objects.push(cylinder);
 
         }
 
@@ -329,11 +350,13 @@ function animate() {
     requestAnimationFrame(animate);
 
     const time = performance.now();
+    let playerHeight = 50;
+    let groundHeight = 10;
 
     if (controls.isLocked === true) {
 
         raycaster.ray.origin.copy(controls.getObject().position);
-        raycaster.ray.origin.y -= 10;
+        raycaster.ray.origin.y += playerHeight;
 
         const intersections = raycaster.intersectObjects(objects, false);
 
@@ -353,11 +376,13 @@ function animate() {
         if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
         if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
 
-        if (onObject === true) {
-
-            velocity.y = Math.max(0, velocity.y);
+        if (onObject == true) {
             canJump = true;
-
+            console.log("onObject")
+            if (moveForward) {
+                moveForward = false; // Block forward movement
+                velocity.z = 0; // Reset forward velocity to zero
+            }
         }
 
         controls.moveRight(- velocity.x * delta * 10);
