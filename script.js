@@ -34,31 +34,36 @@ const FLOOR_SIZE = 2000;
 let generateFloor;
 const floors = {};
 
-const boxGeometry = new THREE.BoxGeometry(100, 100, 100).toNonIndexed();
-const boxMaterial = new THREE.MeshPhongMaterial({ specular: 'purple', flatShading: true, vertexColors: true });
+const boxGeometry = new THREE.BoxGeometry(100, 100,100).toNonIndexed();
+const boxMaterial = new THREE.MeshPhongMaterial({ specular: '#4a5d23 ', flatShading: true, vertexColors: true });
 boxMaterial.color.setHSL(Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75, THREE.SRGBColorSpace);
-const sphereGeometry = new THREE.SphereGeometry(5, 48, 48); // Adjust radius, segments for smoothness
-const sphereMaterial = new THREE.MeshBasicMaterial({ color: '#9D941B' }); // Set a single color
+const sphereGeometry = new THREE.SphereGeometry(100, 100, 100); // Adjust radius, segments for smoothness
+const sphereMaterial = new THREE.MeshBasicMaterial({ color: '#e6e3da' }); // Set a single color
 const cylinderGeometry = new THREE.CylinderGeometry(8, 8, 8, 64); // Adjust radius top/bottom, height, segments for smoothness
 const cylinderMaterial = new THREE.MeshBasicMaterial({ color: 'orange' });
 boxGeometry.computeBoundsTree();
-// sphereGeometry.computeBoundsTree();
+sphereGeometry.computeBoundsTree();
 // cylinderGeometry.computeBoundsTree();
 
 const textureLoader = new THREE.TextureLoader();
-textureLoader.load('./css/image/boxImage.png',
+textureLoader.load('./css/image/moss.png',
     function (texture) {
         boxMaterial.map = texture;
         boxMaterial.needsUpdate = true;
     },
 )
-
+textureLoader.load('./css/image/stone.jpg',
+    function (texture) {
+        sphereMaterial.map = texture;
+        sphereMaterial.needsUpdate = true;
+    },
+)
 const loader = new GLTFLoader();
 
 loader.load('./css/gltf/smallHut/scene.gltf', function (gltf) {
     const modelMesh = gltf.scene;
-    modelMesh.position.set(0, 0, 0);
-    modelMesh.scale.set(2, 2, 2);
+    modelMesh.position.set(300, 250, 300);
+    modelMesh.scale.set(20, 20, 20);
     modelMesh.rotation.set(0, Math.PI / 2, 0);
     scene.add(modelMesh);
     generateFloor();
@@ -283,7 +288,7 @@ function init() {
 
         floorGeometry.computeBoundsTree();
         for (let i = 0; i < FLOOR_SIZE / 100; i++) {
-            let range = FLOOR_SIZE / 2;
+            let range = FLOOR_SIZE;
             const box = new THREE.Mesh(boxGeometry, boxMaterial);
             const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
             const cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
@@ -306,10 +311,10 @@ function init() {
             setY(cylinder);
 
             floor.add(box);
-            // floor.add(sphere);
+            floor.add(sphere);
             // floor.add(cylinder);
             objects.push(box);
-            // objects.push(sphere);
+            objects.push(sphere);
             // objects.push(cylinder);
 
         }
@@ -344,19 +349,18 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 
 }
-
 function animate() {
 
     requestAnimationFrame(animate);
 
     const time = performance.now();
-    let playerHeight = 50;
+    let playerHeight = 100; // Increased player height
     let groundHeight = 10;
 
     if (controls.isLocked === true) {
 
         raycaster.ray.origin.copy(controls.getObject().position);
-        raycaster.ray.origin.y += playerHeight;
+        raycaster.ray.origin.y -= playerHeight / 2; // Adjusted to correctly represent player's bottom
 
         const intersections = raycaster.intersectObjects(objects, false);
 
@@ -376,17 +380,17 @@ function animate() {
         if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
         if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
 
-        if (onObject == true) {
+        if (onObject) {
             canJump = true;
-            console.log("onObject")
+            console.log("onObject");
             if (moveForward) {
                 moveForward = false; // Block forward movement
                 velocity.z = 0; // Reset forward velocity to zero
             }
         }
 
-        controls.moveRight(- velocity.x * delta * 10);
-        controls.moveForward(- velocity.z * delta * 10);
+        controls.moveRight(-velocity.x * delta * 10);
+        controls.moveForward(-velocity.z * delta * 10);
 
         controls.getObject().position.y += (velocity.y * delta); // new behavior
 
@@ -402,20 +406,15 @@ function animate() {
         if (!floors[`${x + 1},${z - 1}`]) generateFloor(x + 1, z - 1);
         if (!floors[`${x - 1},${z - 1}`]) generateFloor(x - 1, z - 1);
 
-
-        if (controls.getObject().position.y < 10) {
-
+        if (controls.getObject().position.y < groundHeight + playerHeight / 2) {
             velocity.y = 0;
-            controls.getObject().position.y = 10;
-
+            controls.getObject().position.y = groundHeight + playerHeight / 2;
             canJump = true;
-
         }
-
     }
 
     prevTime = time;
 
     renderer.render(scene, camera);
-
 }
+
