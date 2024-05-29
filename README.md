@@ -41,8 +41,8 @@ To run this project locally, follow these steps:
 - Overcome obstacles by navigating around or interacting with them.
 
 ## Contributing
-https://github.com/JoyDhar32
-https://github.com/Spantle
+https://github.com/JoyDhar32 ,
+https://github.com/Spantle ,
 https://github.com/CyZhai
 
 ---
