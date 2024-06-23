@@ -44,6 +44,6 @@ To run this project locally, follow these steps:
 - Overcome obstacles by navigating around or interacting with them.
 
 **Contributing:**  
-Contributors: [JoyDhar32](https://github.com/JoyDhar32), [Spantle](https://github.com/Spantle), [CyZhai](https://github.com/CyZhai)
+Contributors: [JoyDhar32](https://github.com/JoyDhar32), [Spantle](https://github.com/Spantle), [CyZhai](https://github.com/CyZhai), [Shaheer](https://github.com/Shaheer-Jilanee)
 
 We hope you enjoy playing Project Horizon as much as we enjoyed developing it! Happy exploring!
